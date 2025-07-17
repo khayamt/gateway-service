@@ -1,0 +1,55 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+      - id: member-service
+        uri: lb://member-service
+        predicates:
+          - Path=/gateway/member-service/**
+        filters:
+          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+
+      - id: event-service
+        uri: lb://event-service
+        predicates:
+          - Path=/gateway/event-service/**
+        filters:
+          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+
+      - id: payment-service
+        uri: lb://payment-service
+        predicates:
+          - Path=/gateway/payment-service/**
+        filters:
+          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+        
+      - id: comms-service
+        uri: lb://comms-service
+        predicates:
+          - Path=/gateway/comms/**
+        filters:
+          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+
+      - id: auth-service
+        uri: lb://auth-service
+        predicates:
+            - Path=/gateway/auth-service/**
+        filters:
+            - RewritePath=/gateway/auth-service/(?<segment>.*), /${segment}
+eureka:
+  instance:
+    hostname: host.containers.internal
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+logging:
+  level:
+    root: INFO
+    co.za.k_polit.gateway_service: INFO
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: DEBUG
