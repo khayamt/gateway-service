@@ -40,6 +40,18 @@ spring:
             - Path=/gateway/auth-service/**
         filters:
             - RewritePath=/gateway/auth-service/(?<segment>.*), /${segment}
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: false
 eureka:
   instance:
     hostname: host.containers.internal
