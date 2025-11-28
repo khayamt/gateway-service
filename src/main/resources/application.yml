@@ -1,45 +1,95 @@
 server:
   port: 8100
+
 spring:
   application:
     name: gateway-service
+
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
       routes:
-      - id: member-service
-        uri: lb://member-service
-        predicates:
-          - Path=/gateway/member-service/**
-        filters:
-          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
 
-      - id: event-service
-        uri: lb://event-service
-        predicates:
-          - Path=/gateway/event-service/**
-        filters:
-          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+        # -------------------------
+        # Member Service
+        # -------------------------
+        - id: member-service
+          uri: lb://member-service
+          predicates:
+            - Path=/gateway/member-service/**
+          filters:
+            - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
 
-      - id: payment-service
-        uri: lb://payment-service
-        predicates:
-          - Path=/gateway/payment-service/**
-        filters:
-          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
-        
-      - id: comms-service
-        uri: lb://comms-service
-        predicates:
-          - Path=/gateway/comms/**
-        filters:
-          - RewritePath=/gateway/member-service/(?<segment>.*), /${segment}
+        # -------------------------
+        # Event Service
+        # -------------------------
+        - id: event-service
+          uri: lb://event-service
+          predicates:
+            - Path=/gateway/event-service/**
+          filters:
+            - RewritePath=/gateway/event-service/(?<segment>.*), /${segment}
 
-      - id: auth-service
-        uri: lb://auth-service
-        predicates:
+        # -------------------------
+        # Payment Service
+        # Normal API calls
+        # -------------------------
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/gateway/payment-service/**
+          filters:
+            - RewritePath=/gateway/payment-service/(?<segment>.*), /${segment}
+
+        # -------------------------
+        # Payment Webhook Route
+        # External → internal service
+        # https://your-domain.com/payment/notify → payment-service/notify
+        # -------------------------
+        - id: payment-webhook
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment/notify
+          filters:
+            - StripPrefix=1
+
+        # -------------------------
+        # Comms Service
+        # -------------------------
+        - id: comms-service
+          uri: lb://comms-service
+          predicates:
+            - Path=/gateway/comms/**
+          filters:
+            - RewritePath=/gateway/comms/(?<segment>.*), /${segment}
+
+        # -------------------------
+        # Auth Service
+        # -------------------------
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
             - Path=/gateway/auth-service/**
-        filters:
+          filters:
             - RewritePath=/gateway/auth-service/(?<segment>.*), /${segment}
+
+        # -------------------------
+        # Document Service
+        # -------------------------
+        - id: document-service
+          uri: lb://document-service
+          predicates:
+            - Path=/gateway/document-service/**
+          filters:
+            - RewritePath=/gateway/document-service/(?<segment>.*), /${segment}
+
+      # -------------------------
+      # Global CORS
+      # -------------------------
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -52,16 +102,19 @@ spring:
               - OPTIONS
             allowedHeaders: "*"
             allowCredentials: false
+
 eureka:
-  instance:
-    hostname: host.containers.internal
   client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+
 logging:
+  file:
+    name:
   level:
     root: INFO
-    co.za.k_polit.gateway_service: INFO
-    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: DEBUG
+    za.co.k-polit.gateway_service: DEBUG
+  pattern:
+    console: '{"gateway-service - timestamp": "%d{yyyy-MM-dd HH:mm:ss}", "level": "%-5level", "logger": "%logger{36}", "message": "%msg"}%n'

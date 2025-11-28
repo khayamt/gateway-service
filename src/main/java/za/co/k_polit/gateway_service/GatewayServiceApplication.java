@@ -1,4 +1,4 @@
-package co.za.k_polit.gateway_service;
+package za.co.k_polit.gateway_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
