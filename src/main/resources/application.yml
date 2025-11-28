@@ -5,7 +5,7 @@ spring:
   application:
     name: gateway-service
   config:
-    import: "optional:file:/app/config/application-secrets.yml"
+    import: "optional:file:/app/config/gateway-secrets.yml"
   cloud:
     gateway:
       discovery:
