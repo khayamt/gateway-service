@@ -101,6 +101,8 @@ spring:
               - OPTIONS
             allowedHeaders: "*"
             allowCredentials: false
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials Access-Control-Expose-Headers, RETAIN_FIRST
 
 eureka:
   client:
