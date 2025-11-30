@@ -145,3 +145,12 @@ logging:
     za.co.k-polit.gateway_service: DEBUG
   pattern:
     console: '{"gateway-service - timestamp": "%d{yyyy-MM-dd HH:mm:ss}", "level": "%-5level", "logger": "%logger{36}", "message": "%msg"}%n'
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: AI Engine
+        url: /gateway/aiengine/v3/api-docs
+      - name: Payment
+        url: /gateway/payment-service/v3/api-docs
+    disable-swagger-default-url: true
