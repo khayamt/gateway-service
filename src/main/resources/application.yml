@@ -62,9 +62,9 @@ spring:
         - id: comms-service
           uri: lb://comms-service
           predicates:
-            - Path=/gateway/comms/**
+            - Path=/gateway/comms-service/**
           filters:
-            - RewritePath=/gateway/comms/(?<segment>.*), /${segment}
+            - RewritePath=/gateway/comms-service/(?<segment>.*), /${segment}
 
         # -------------------------
         # Auth Service
@@ -85,6 +85,16 @@ spring:
             - Path=/gateway/document-service/**
           filters:
             - RewritePath=/gateway/document-service/(?<segment>.*), /${segment}
+
+        # -------------------------
+        # AI Engine (normal)
+        # -------------------------
+        - id: ai-engine
+          uri: lb://ai-engine
+          predicates:
+            - Path=/gateway/ai-engine/**
+          filters:
+            - RewritePath=/gateway/ai-engine/(?<segment>.*), /${segment}
 
       # -------------------------
       # Global CORS
