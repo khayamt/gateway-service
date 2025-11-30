@@ -90,11 +90,11 @@ spring:
         # AI Engine (normal)
         # -------------------------
         - id: ai-engine
-          uri: lb://ai-engine
+          uri: lb://aiengine
           predicates:
-            - Path=/gateway/ai-engine/**
+            - Path=/gateway/aiengine/**
           filters:
-            - RewritePath=/gateway/ai-engine/(?<segment>.*), /${segment}
+            - RewritePath=/gateway/aiengine/(?<segment>.*), /${segment}
 
       # -------------------------
       # Global CORS
