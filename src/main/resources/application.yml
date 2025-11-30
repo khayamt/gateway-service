@@ -96,6 +96,22 @@ spring:
           filters:
             - RewritePath=/gateway/aiengine/(?<segment>.*), /${segment}
 
+        # API docs JSON
+        - id: aiengine-openapi
+          uri: lb://aiengine
+          predicates:
+            - Path=/gateway/aiengine/v3/api-docs/**
+          filters:
+            - RewritePath=/gateway/aiengine/v3/api-docs/(?<segment>.*), /v3/api-docs/${segment}
+
+        # Swagger UI config
+        - id: aiengine-swagger-config
+          uri: lb://aiengine
+          predicates:
+            - Path=/gateway/aiengine/swagger-ui/**
+          filters:
+            - RewritePath=/gateway/aiengine/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
+
       # -------------------------
       # Global CORS
       # -------------------------
