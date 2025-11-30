@@ -89,7 +89,7 @@ spring:
         # -------------------------
         # AI Engine (normal)
         # -------------------------
-        - id: ai-engine
+        - id: aiengine
           uri: lb://aiengine
           predicates:
             - Path=/gateway/aiengine/**
